@@ -2,12 +2,28 @@
 
 namespace MrShan0\WordpressAuth\Auth;
 
+use App\User;
+use App\WordpressUser;
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 
 class EloquentWordpressUserProvider extends EloquentUserProvider
 {
+    /**
+     * Retrieve a user by their unique identifier.
+     *
+     * @param  mixed  $identifier
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function retrieveById($identifier)
+    {
+        $query = User::where('ID', $identifier);
+        $wp_user = $query->first();
+
+        return $wp_user;
+    }
     /**
      * Retrieve a user by the given credentials.
      *
@@ -23,15 +39,9 @@ class EloquentWordpressUserProvider extends EloquentUserProvider
         // First we will add each credential element to the query as a where clause.
         // Then we can execute the query and, if we found a user, return it in a
         // Eloquent User "model" that will be utilized by the Guard instances.
-        $query = $this->createModel()->newQuery();
-
-        foreach ($credentials as $key => $value) {
-            if (! Str::contains($key, 'user_pass')) {
-                $query->where($key, $value);
-            }
-        }
-
-        return $query->first();
+        $query = User::where('user_email', $credentials['email']);
+        $wp_user = $query->first();
+        return $wp_user;
     }
 
     /**
@@ -43,7 +53,7 @@ class EloquentWordpressUserProvider extends EloquentUserProvider
      */
     public function validateCredentials(UserContract $user, array $credentials)
     {
-        $plain = $credentials['user_pass'];
+        $plain = $credentials['password'];
 
         return $this->hasher->check($plain, $user->getAuthPassword());
     }

@@ -56,4 +56,9 @@ class WordPressHasher implements Hasher
     {
         return false;
     }
+
+    public function info( $hashedValue )
+    {
+        // TODO: Implement info() method.
+    }
 }
