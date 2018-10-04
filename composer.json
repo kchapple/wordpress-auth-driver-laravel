@@ -1,5 +1,5 @@
 {
-    "name": "kchapple/wordpress-auth-provider",
+    "name": "kchapple/wordpress-auth-driver-laravel",
     "description": "A package to provide wordpress users in laravel authentication system.",
     "keywords": ["laravel", "wordpress", "authentication"],
     "type": "library",
